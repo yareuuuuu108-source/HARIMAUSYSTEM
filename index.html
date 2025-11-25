@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HARIMAU108 SYSTEM</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+
+<style>
+body {margin:0;background:#000;color:#fff;font-family:'Orbitron',sans-serif;overflow:hidden;}
+canvas#matrix {position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+.page {position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:40px;}
+.title {font-size:46px;color:#c770ff;text-shadow:0 0 12px #c770ff,0 0 35px #aa00ff;animation:glow 2s infinite alternate;}
+@keyframes glow {from{text-shadow:0 0 12px #c770ff;}to{text-shadow:0 0 35px #ff9bff;}}
+.subtitle {font-size:18px;margin-top:12px;color:#dfc1ff;animation:pulse 2s infinite;}
+@keyframes pulse {0%{opacity:0.5;}100%{opacity:1;}}
+.btn {padding:12px 40px;margin-top:20px;font-size:20px;font-weight:700;border:none;border-radius:12px;background:linear-gradient(90deg,#9f15ff,#5c48ff,#00d4ff);color:white;cursor:pointer;transition:.3s;}
+.btn:hover {transform:scale(1.07);box-shadow:0 0 18px #d48cff;}
+.container {background:rgba(255,255,255,0.08);backdrop-filter:blur(6px);padding:20px;width:360px;border-radius:15px;}
+.label {margin-top:12px;font-size:14px;color:#d8baff;}
+input,select {width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.3);color:white;}
+#winrateResult {display:none;font-size:34px;font-weight:900;margin-top:18px;color:#c770ff;text-shadow:0 0 18px #c770ff;animation:pulse 1.4s infinite;}
+
+/* ERROR SHAKE + RED */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+.input-error {
+  border: 2px solid #ff0037 !important;
+  box-shadow: 0 0 15px #ff0037, 0 0 35px #ff0022;
+  animation: shake 0.35s ease;
+}
+/* Screen flash */
+@keyframes flashRed {
+  0% { background: rgba(255,0,0,0.3); }
+  100% { background: rgba(255,0,0,0); }
+}
+.flash-screen {
+  animation: flashRed 0.25s ease-out;
+}
+/* Screen micro shake */
+@keyframes microShake {
+  0% { transform: translate(0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-2px, -1px); }
+  100% { transform: translate(0); }
+}
+.screen-shake {
+  animation: microShake 0.25s ease;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div id="welcome" class="page" style="display:flex;">
+ <h1 class="title">HARIMAU108 SYSTEM</h1>
+ <p class="subtitle">Selamat Datang — Tekan START</p>
+ <button class="btn" onclick="startSystem()">START</button>
+</div>
+
+<div id="panel" class="page">
+ <div class="container">
+   <h2 style="color:#c770ff;">FITUR PANEL</h2>
+
+   <label class="label">User ID :</label>
+   <input id="pf_user">
+
+   <label class="label">Winrate :</label>
+   <select id="pf_wr"><option>75%</option><option>80%</option><option>90%</option><option>95%</option></select>
+
+   <label class="label">Full Sensational :</label>
+   <select id="pf_fs"><option>Aktif</option><option>Tidak Aktif</option></select>
+
+   <label class="label">Jackpot 3.5jt :</label>
+   <select id="pf_j1"><option>Aktif</option><option>Tidak Aktif</option></select>
+
+   <label class="label">Jackpot 10jt :</label>
+   <select id="pf_j2"><option>Aktif</option><option>Tidak Aktif</option></select>
+
+   <label class="label">Anti Banned :</label>
+   <select id="pf_ab"><option>Aktif</option><option>Tidak Aktif</option></select>
+
+   <button class="btn" onclick="activate()">AKTIFKAN</button>
+   <div id="panelLoad" style="display:none;margin-top:12px;font-size:20px;color:#c770ff;">Loading 1%</div>
+ </div>
+
+ <button class="btn" onclick="gotoWinrate()">MENU WINRATE</button>
+</div>
+
+<div id="winrate" class="page">
+ <div class="container">
+   <h2 style="color:#c770ff;">WINRATE HARIMAU108</h2>
+
+   <label class="label">User ID :</label>
+   <input id="wrUid">
+
+   <button class="btn" onclick="cekWinrate()">CEK WINRATE</button>
+   <div id="wrLoad" style="display:none;margin-top:14px;font-size:20px;color:#c770ff;">Loading 1%</div>
+
+   <div id="winrateResult">97%</div>
+ </div>
+
+ <button class="btn" onclick="gotoPanel()">KEMBALI</button>
+</div>
+
+<audio id="bgMusic" src="https://files.catbox.moe/7g8u1j.mp3"></audio>
+<audio id="errorSound" src="https://files.catbox.moe/yhlscn.mp3"></audio>
+
+<script>
+function show(id){document.querySelectorAll('.page').forEach(p=>p.style.display='none');document.getElementById(id).style.display='flex';}
+function startSystem(){let a=document.getElementById("bgMusic");a.volume=0.45;a.play();show("panel");}
+function gotoPanel(){show("panel");}
+function gotoWinrate(){show("winrate");}
+
+function triggerErrorEffect(element) {
+    element.classList.add("input-error");
+    setTimeout(() => element.classList.remove("input-error"), 500);
+
+    document.body.classList.add("flash-screen");
+    setTimeout(() => document.body.classList.remove("flash-screen"), 250);
+
+    document.body.classList.add("screen-shake");
+    setTimeout(() => document.body.classList.remove("screen-shake"), 250);
+
+    let s = document.getElementById("errorSound");
+    s.volume = 1;
+    s.play();
+}
+
+function activate(){
+ let uid = document.getElementById("pf_user");
+ if(uid.value.trim() === ""){
+   triggerErrorEffect(uid);
+   return;
+ }
+
+ let box=document.getElementById("panelLoad");
+ box.style.display="block";
+ let p=1;
+ let t=setInterval(()=>{
+   box.innerText="Loading "+p+"%";p++;
+   if(p>100){
+     clearInterval(t);
+     box.innerText="FITUR AKTIF ✓";
+     setTimeout(()=>{
+       window.location.href="https://heylink.me/harimau108provider";
+     },1500);
+   }
+ },35);
+}
+
+function cekWinrate(){
+ let uid = document.getElementById("wrUid");
+ if(uid.value.trim() === ""){
+   triggerErrorEffect(uid);
+   return;
+ }
+
+ wrLoad.style.display="block";
+ winrateResult.style.display="none";
+
+ let p=1;
+ let t=setInterval(()=>{
+   wrLoad.innerText="Loading "+p+"%";p++;
+   if(p>100){
+     clearInterval(t);
+     wrLoad.style.display="none";
+     winrateResult.style.display="block";
+   }
+ },40);
+}
+
+const cv=document.getElementById("matrix"),ctx=cv.getContext("2d");
+cv.height=innerHeight;cv.width=innerWidth;
+let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%&*".split(""),font=14;
+let cols=cv.width/font,drops=new Array(Math.floor(cols)).fill(1);
+setInterval(()=>{
+ ctx.fillStyle="rgba(0,0,0,0.06)";
+ ctx.fillRect(0,0,cv.width,cv.height);
+ ctx.fillStyle="#c770ff";
+ ctx.font=font+"px Orbitron";
+ for(let i=0;i<drops.length;i++){
+   let txt=chars[Math.random()*chars.length|0];
+   ctx.fillText(txt,i*font,drops[i]*font);
+   if(drops[i]*font>cv.height && Math.random()>0.965)drops[i]=0;
+   drops[i]++;
+ }
+},50);
+</script>
+
+</body>
+</html>
