@@ -40,9 +40,7 @@ input,select {width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1p
   0% { background: rgba(255,0,0,0.3); }
   100% { background: rgba(255,0,0,0); }
 }
-.flash-screen {
-  animation: flashRed 0.25s ease-out;
-}
+.flash-screen {animation: flashRed 0.25s ease-out;}
 /* Screen micro shake */
 @keyframes microShake {
   0% { transform: translate(0); }
@@ -51,9 +49,7 @@ input,select {width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1p
   75% { transform: translate(-2px, -1px); }
   100% { transform: translate(0); }
 }
-.screen-shake {
-  animation: microShake 0.25s ease;
-}
+.screen-shake {animation: microShake 0.25s ease;}
 </style>
 </head>
 
@@ -158,6 +154,9 @@ function activate(){
  },35);
 }
 
+/* ==========================================================
+   ✅ WINRATE RANDOM 90% – 99%
+   ========================================================== */
 function cekWinrate(){
  let uid = document.getElementById("wrUid");
  if(uid.value.trim() === ""){
@@ -174,11 +173,17 @@ function cekWinrate(){
    if(p>100){
      clearInterval(t);
      wrLoad.style.display="none";
+
+     // 🔥 Generate winrate random 90–99
+     let randomWR = Math.floor(Math.random() * 10) + 90;
+     winrateResult.innerText = randomWR + "%";
+
      winrateResult.style.display="block";
    }
  },40);
 }
 
+/* MATRIX RAIN */
 const cv=document.getElementById("matrix"),ctx=cv.getContext("2d");
 cv.height=innerHeight;cv.width=innerWidth;
 let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%&*".split(""),font=14;
